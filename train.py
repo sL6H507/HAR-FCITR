@@ -215,19 +215,15 @@ if __name__ == '__main__':
 
     def update_gpu_info(self):
         try:
-            # Clear previous GPU information
             self.gpu_info.delete("1.0", tk.END)
-
-            # Get GPU information
             gpu_info = self.get_gpu_info()
-
-            # Update text widget with new GPU information
-            self.gpu_info.insert(tk.END, gpu_info)
+            self.gpu_info.insert(tk.END, gpu_info)            
+        # Schedule the next update after 5 seconds (5000 milliseconds)
+            self.after(5000, self.update_gpu_info)
         except Exception as e:
             print(f"Error updating GPU info: {e}")
 
-        # Schedule the next update after 5 seconds (5000 milliseconds)
-        self.after(5000, self.update_gpu_info)
+        
 
     def get_gpu_info(self):
         try:
