@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import Canvas, Button, filedialog, Scale, Text, messagebox
+from tkinter import simpledialog
 from PIL import Image, ImageTk
 from io import BytesIO
 from utils import fetch_and_display_image,fetch_image
@@ -147,6 +148,16 @@ class Predict(tk.Frame):
             height=82.0
         )
 
+        linkprediction = tk.Button(self, text="Predicting Link", font=("Inter", 15), borderwidth=0,
+                                 highlightthickness=0, command=lambda: controller.show_frame_with_auth(train.Train),
+                                 relief="flat")
+        linkprediction.place(
+            x=296.0,
+            y=910.0,
+            width=237.0,
+            height=82.0
+        )
+
         self.homepage_btn = tk.Button(self, text="Home Page", font=("Inter", 15), bg="#FFFFFF",
                                       command=lambda: controller.show_frame_with_auth(home.HomePage), borderwidth=0,
                                       highlightthickness=0, relief="flat")
@@ -179,13 +190,13 @@ class Predict(tk.Frame):
     def select_video_file(self):
         self.file_path = filedialog.askopenfilename(
             title="Select a Video File",
-            filetypes=(("Video Files (.mp4;.avi)", "*.mp4;*.avi"),)
+            filetypes=(("Video Files (.mp4;.avi)", "*.mp4;*.avi;*.mpeg;*.webm;*.mpg;*.mov;*.gif;*.asf;*.mkv;*.m4v"),)
         )
 
     def select_image_file(self):
         self.file_path = filedialog.askopenfilename(
             title="Select an Image File",
-            filetypes=(("Image Files (.png;.jpg;.jpeg)", "*.png;*.jpg;*.jpeg"),)
+            filetypes=(("Image Files (.png;.jpg;.jpeg)", "*.png;*.jpg;*.jpeg;*.dng;*.tiff;*.tif;*.webp;*.bmp;*.mpo"),)
         )
 
     def p_predict(self):
@@ -233,7 +244,7 @@ class Predict(tk.Frame):
                 break
 
             # Perform prediction using YOLO
-            results = model.predict(source=frame, conf=confidence, iou=iou, imgsz=640)
+            results = model.predict(source=frame, conf=confidence, iou=iou, imgsz=800)
 
             # Display the frame with predictions
             if results and results[0]:
@@ -247,3 +258,8 @@ class Predict(tk.Frame):
         # Release the webcam and close OpenCV windows
         cap.release()
         cv2.destroyAllWindows()
+    def show_link_prediction_dialog(self):
+        link = simpledialog.askstring("Link Prediction", "Enter the link for prediction:")
+        if link:
+            messagebox.showinfo("Link Prediction", f"Processing link: {link}")
+            # Add your link prediction code here
