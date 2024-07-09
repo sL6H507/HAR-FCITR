@@ -203,14 +203,28 @@ class Predict(tk.Frame):
         except Exception as er:
             messagebox.showerror(title="Predict", message=str(er))
 
+
     def cam_predict(self):
+        # Retrieve confidence and IOU values from the scales
         confidence = float(self.confscale.get()) / 100
         iou = float(self.iouscale.get()) / 100
 
+        # Load the YOLO model
+        if not self.model_file_path:
+            messagebox.showwarning(title="Predict", message="Model file not selected.")
+            return
+
+        model = YOLO(self.model_file_path)
+
+        # Open the webcam
         cap = cv2.VideoCapture(0)
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-        cap.set(cv2.CAP_PROP_FPS, 60)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 800)  # Lower resolution
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)  # Lower resolution
+        cap.set(cv2.CAP_PROP_FPS, 60)  # Lower FPS
+
+        if not cap.isOpened():
+            print("Failed to open webcam.")
+            return
 
         while True:
             ret, frame = cap.read()
@@ -218,22 +232,18 @@ class Predict(tk.Frame):
                 print("Failed to capture frame")
                 break
 
-            try:
-                if self.model_file_path:
-                    results = YOLO(self.model_file_path).predict(source=frame, show=True, save=True, conf=confidence,
-                                                                iou=iou,imgsz=640)
-                    self.entry_3.delete(1.0, tk.END)  # Clear previous results
-                    self.entry_3.insert(tk.END, results)
-                    cv2.imshow("frame", results[0].plot())
-                    if cv2.waitKey(1) & 0xFF == ord('q'):
-                        break
-                else:
-                    messagebox.showwarning(title="Predict", message="Model file or input file not selected.")
-                    break
-            except Exception as er:
-                messagebox.showerror(title="Predict", message=str(er))
+            # Perform prediction using YOLO
+            results = model.predict(source=frame, conf=confidence, iou=iou, imgsz=640)
+
+            # Display the frame with predictions
+            if results and results[0]:
+                cv2.imshow("frame", results[0].plot())
+            else:
+                cv2.imshow("frame", frame)
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
+        # Release the webcam and close OpenCV windows
         cap.release()
         cv2.destroyAllWindows()
-
