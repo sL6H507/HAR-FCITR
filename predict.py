@@ -121,8 +121,8 @@ class Predict(tk.Frame):
             font=("Inter", 24 * -1)
         )
 
-        self.entry_3 = Text(self, bd=0, bg="#F8F8F8", fg="#000716", highlightthickness=0)
-        self.entry_3.place(
+        self.result_entry = Text(self, bd=0, bg="#F8F8F8", fg="#000716", highlightthickness=0)
+        self.result_entry.place(
             x=304.0,
             y=427.0,
             width=832.0,
@@ -205,10 +205,10 @@ class Predict(tk.Frame):
 
         try:
             if self.model_file_path and self.file_path:
-                self.entry_3.delete(1.0, tk.END)  # Clear previous results
+                self.result_entry.delete(1.0, tk.END)  # Clear previous results
                 results = YOLO(self.model_file_path).predict(self.file_path, show=True, save=True, conf=confidence,
                                                              iou=iou,imgsz=640)
-                self.entry_3.insert(tk.END, results)
+                self.result_entry.insert(tk.END, results)
             else:
                 messagebox.showwarning(title="Predict", message="Model file or input file not selected.")
         except Exception as er:
@@ -258,14 +258,14 @@ class Predict(tk.Frame):
         # Release the webcam and close OpenCV windows
         cap.release()
         cv2.destroyAllWindows()
-        
+
     def show_link_prediction_dialog(self):
         confidence = float(self.confscale.get()) / 100
         iou = float(self.iouscale.get()) / 100
         link = simpledialog.askstring("Link Prediction", "Enter the link for prediction:")
-        if link:
+        if self.model_file_path:
             try:
-                if self.model_file_path:
+                if link:
                     self.result_entry.delete(1.0, tk.END)  # Clear previous results
                     results = YOLO(self.model_file_path).predict(link, show=True, save=True, conf=confidence,
                                                                 iou=iou,imgsz=640)
