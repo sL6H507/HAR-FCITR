@@ -258,8 +258,19 @@ class Predict(tk.Frame):
         # Release the webcam and close OpenCV windows
         cap.release()
         cv2.destroyAllWindows()
+        
     def show_link_prediction_dialog(self):
+        confidence = float(self.confscale.get()) / 100
+        iou = float(self.iouscale.get()) / 100
         link = simpledialog.askstring("Link Prediction", "Enter the link for prediction:")
         if link:
-            messagebox.showinfo("Link Prediction", f"Processing link: {link}")
-            # Add your link prediction code here
+            try:
+                if self.model_file_path:
+                    self.result_entry.delete(1.0, tk.END)  # Clear previous results
+                    results = YOLO(self.model_file_path).predict(link, show=True, save=True, conf=confidence,
+                                                                iou=iou,imgsz=640)
+                    self.result_entry.insert(tk.END, results)
+                else:
+                    messagebox.showwarning(title="Predict", message="Model file or input file not selected.")
+            except Exception as er:
+                messagebox.showerror(title="Predict", message=str(er))
