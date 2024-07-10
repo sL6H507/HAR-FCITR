@@ -6,6 +6,7 @@ from io import BytesIO
 from utils import fetch_and_display_image,fetch_image
 import requests,cv2,home,train
 from ultralytics import YOLO 
+import roboflow as Roboflow
 
 class Predict(tk.Frame):
     def __init__(self, parent, controller):
@@ -28,7 +29,7 @@ class Predict(tk.Frame):
         self.canvas.place(x=0, y=0)
 
         self.canvas.create_text(
-            633.0,
+            659.0,
             72.0,
             anchor="nw",
             text="Predict",
@@ -37,27 +38,27 @@ class Predict(tk.Frame):
         )
         self.canvas.create_text(
             569.0,
-            589.0,
+            539.0,
             anchor="nw",
             text="Select An option ",
             fill="#000000",
             font=("Inter", 36 * -1)
         )
-        self.canvas.create_text(305.0, 649.0, anchor="nw", text="Live Footage", fill="#000000", font=("Inter", 36 * -1))
-        self.canvas.create_text(660.0, 649.0, anchor="nw", text="Video", fill="#000000", font=("Inter", 36 * -1))
-        self.canvas.create_text(974.0, 649.0, anchor="nw", text="Image", fill="#000000", font=("Inter", 36 * -1))
+        self.canvas.create_text(305.0, 599.0, anchor="nw", text="Live Footage", fill="#000000", font=("Inter", 36 * -1))
+        self.canvas.create_text(660.0, 599.0, anchor="nw", text="Video", fill="#000000", font=("Inter", 36 * -1))
+        self.canvas.create_text(974.0, 599.0, anchor="nw", text="Image", fill="#000000", font=("Inter", 36 * -1))
 
         self.entry_1 = tk.Entry(self, bd=0, bg="#F8F8F8", fg="#000716", highlightthickness=0)
         self.entry_1.place(
             x=304.0,
-            y=294.0,
+            y=234.0,
             width=467.0,
             height=34.0
         )
 
         self.canvas.create_text(
             304.0,
-            254.0,
+            194.0,
             anchor="nw",
             text="Model (.pt) location :",
             fill="#000000",
@@ -67,7 +68,7 @@ class Predict(tk.Frame):
         self.modeldir_btn_img = fetch_image(self,"https://media.tenor.com/kEvgsQa811YAAAAM/dir.gif", 70, 36)
         modeldir = tk.Button(self, image=self.modeldir_btn_img, borderwidth=0, highlightthickness=0,
                                    command=self.select_model_file, relief="flat")
-        modeldir.place(x=771.0, y=294.0, width=70.0, height=36.0)
+        modeldir.place(x=771.0, y=234.0, width=70.0, height=36.0)
 
         self.confscale = Scale(
             self,
@@ -83,7 +84,7 @@ class Predict(tk.Frame):
         )
         self.confscale.place(
             x=304.0,
-            y=357.0
+            y=297.0
         )
 
         self.iouscale = Scale(
@@ -100,12 +101,12 @@ class Predict(tk.Frame):
         )
         self.iouscale.place(
             x=525.0,
-            y=357.0
+            y=297.0
         )
 
         self.canvas.create_text(
             304.0,
-            330.0,
+            270.0,
             anchor="nw",
             text="Confidence :",
             fill="#000000",
@@ -114,9 +115,9 @@ class Predict(tk.Frame):
 
         self.canvas.create_text(
             525.0,
-            330.0,
+            270.0,
             anchor="nw",
-            text="Intersection Over Union (IoU):",
+            text="Overlapping:",
             fill="#000000",
             font=("Inter", 24 * -1)
         )
@@ -124,7 +125,7 @@ class Predict(tk.Frame):
         self.result_entry = Text(self, bd=0, bg="#F8F8F8", fg="#000716", highlightthickness=0)
         self.result_entry.place(
             x=304.0,
-            y=427.0,
+            y=365.0,
             width=832.0,
             height=151.0
         )
@@ -133,27 +134,26 @@ class Predict(tk.Frame):
                                 command=self.p_predict, relief="flat")
         predict_btn.place(
             x=957.0,
-            y=294.0,
+            y=234.0,
             width=179.0,
             height=36.0
         )
 
-        nextpage_btn = tk.Button(self, text="For Training Click Here", font=("Inter", 15), borderwidth=0,
-                                 highlightthickness=0, command=lambda: controller.show_frame_with_auth(train.Train),
-                                 relief="flat")
+        nextpage_btn = tk.Button(self, text="Training", font=("Inter", 15), borderwidth=0, bg="#FFFFFF",
+                                 highlightthickness=0, command=lambda: controller.show_frame_with_auth(train.Train), relief="flat")
         nextpage_btn.place(
-            x=602.0,
-            y=910.0,
-            width=237.0,
-            height=82.0
+            x=19.0,
+            y=860.0,
+            width=131.0,
+            height=50.0
         )
 
-        linkprediction = tk.Button(self, text="Predicting Link", font=("Inter", 15), borderwidth=0,
+        linkprediction = tk.Button(self, text="Prediction using Link", font=("Inter", 15), borderwidth=0,
                                  highlightthickness=0, command=self.show_link_prediction_dialog,
                                  relief="flat")
         linkprediction.place(
-            x=296.0,
-            y=910.0,
+            x=598.0,
+            y=860.0,
             width=237.0,
             height=82.0
         )
@@ -161,22 +161,22 @@ class Predict(tk.Frame):
         self.homepage_btn = tk.Button(self, text="Home Page", font=("Inter", 15), bg="#FFFFFF",
                                       command=lambda: controller.show_frame_with_auth(home.HomePage), borderwidth=0,
                                       highlightthickness=0, relief="flat")
-        self.homepage_btn.place(x=1276, y=910, width=131, height=50)
+        self.homepage_btn.place(x=1290, y=860, width=131, height=50)
 
 
         self.image_image_1 = fetch_and_display_image(self,"https://media.tenor.com/Q8nIjfXA_awAAAAi/fcitr.gif", 115.0, 107.0,214,209)
 
         self.photoimage=fetch_image(self,"https://media.tenor.com/Zv5dIqsnvtcAAAAM/photo.gif",221,209),
         predictimage = tk.Button(self, image=self.photoimage, borderwidth=0, highlightthickness=0,command=self.select_image_file, relief="flat")
-        predictimage.place(x=915.0,y=693.0,width=221.0,height=209.0)
+        predictimage.place(x=915.0,y=643.0,width=221.0,height=209.0)
 
         self.liveimage = fetch_image(self,"https://media.tenor.com/LfYVxf_SjysAAAAM/cam.gif", 221, 209)
         self.predictlive = tk.Button(self, borderwidth=0, highlightthickness=0, image=self.liveimage, command=self.cam_predict, relief="flat")
-        self.predictlive.place(x=304.0, y=693.0, width=221.0, height=209.0)
+        self.predictlive.place(x=304.0, y=643.0, width=221.0, height=209.0)
 
         self.predictvid_img = fetch_image(self,"https://media.tenor.com/Co-LVRF8ZwEAAAAM/cam.gif", 221, 209)
         predictvid = tk.Button(self, image=self.predictvid_img, borderwidth=0, highlightthickness=0,command=self.select_video_file, relief="flat")
-        predictvid.place(x=599.0,y=693.0,width=221.0,height=209.0)
+        predictvid.place(x=599.0,y=643.0,width=221.0,height=209.0)
 
     def select_model_file(self):
         self.model_file_path = filedialog.askopenfilename(
@@ -216,22 +216,28 @@ class Predict(tk.Frame):
 
 
     def cam_predict(self):
-        # Retrieve confidence and IOU values from the scales
-        confidence = float(self.confscale.get()) / 100
-        iou = float(self.iouscale.get()) / 100
-
-        # Load the YOLO model
+        # Check if the model file path is selected
         if not self.model_file_path:
             messagebox.showwarning(title="Predict", message="Model file not selected.")
             return
 
-        model = YOLO(self.model_file_path)
+        # Retrieve confidence and IOU values from the scales
+        confidence = float(self.confscale.get()) / 100
+        iou = float(self.iouscale.get()) / 100
+
+        # Ask the user to select FPS using a dialog with radio buttons
+        fps_options = [60, 30, 24]
+        selected_fps = simpledialog.askinteger("Select FPS", "Choose FPS [24,30,60]:", initialvalue=60, minvalue=1, maxvalue=120)
+
+        if selected_fps not in fps_options:
+            messagebox.showwarning("Select FPS", "Invalid FPS selection.")
+            return
 
         # Open the webcam
         cap = cv2.VideoCapture(0)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 800)  # Lower resolution
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)  # Lower resolution
-        cap.set(cv2.CAP_PROP_FPS, 60)  # Lower FPS
+        cap.set(cv2.CAP_PROP_FPS, selected_fps)  # Set the selected FPS
 
         if not cap.isOpened():
             print("Failed to open webcam.")
@@ -244,6 +250,7 @@ class Predict(tk.Frame):
                 break
 
             # Perform prediction using YOLO
+            model = YOLO(self.model_file_path)
             results = model.predict(source=frame, conf=confidence, iou=iou, imgsz=800)
 
             # Display the frame with predictions
