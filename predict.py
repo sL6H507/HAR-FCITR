@@ -149,7 +149,7 @@ class Predict(tk.Frame):
         )
 
         linkprediction = tk.Button(self, text="Predicting Link", font=("Inter", 15), borderwidth=0,
-                                 highlightthickness=0, command=lambda: controller.show_frame_with_auth(train.Train),
+                                 highlightthickness=0, command=self.show_link_prediction_dialog,
                                  relief="flat")
         linkprediction.place(
             x=296.0,
