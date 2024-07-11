@@ -6,7 +6,6 @@ from io import BytesIO
 from utils import fetch_and_display_image,fetch_image
 import requests,cv2,home,train
 from ultralytics import YOLO 
-import roboflow as Roboflow
 
 class Predict(tk.Frame):
     def __init__(self, parent, controller):
@@ -216,56 +215,34 @@ class Predict(tk.Frame):
 
 
     def cam_predict(self):
-        # Check if the model file path is selected
         if not self.model_file_path:
             messagebox.showwarning(title="Predict", message="Model file not selected.")
             return
-
-        # Retrieve confidence and IOU values from the scales
+        model = YOLO(model=self.model_file_path)
         confidence = float(self.confscale.get()) / 100
-        iou = float(self.iouscale.get()) / 100
-
-        # Ask the user to select FPS using a dialog with radio buttons
-        fps_options = [60, 30, 24]
-        selected_fps = simpledialog.askinteger("Select FPS", "Choose FPS [24,30,60]:", initialvalue=60, minvalue=1, maxvalue=120)
-
-        if selected_fps not in fps_options:
-            messagebox.showwarning("Select FPS", "Invalid FPS selection.")
-            return
-
-        # Open the webcam
+        iou = float(self.iouscale.get()) / 100      
+        
         cap = cv2.VideoCapture(0)
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 800)  # Lower resolution
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 640)  # Lower resolution
-        cap.set(cv2.CAP_PROP_FPS, selected_fps)  # Set the selected FPS
-
-        if not cap.isOpened():
-            print("Failed to open webcam.")
-            return
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        cap.set(cv2.CAP_PROP_FPS, 50)
 
         while True:
             ret, frame = cap.read()
+
             if not ret:
                 print("Failed to capture frame")
-                break
+                continue
 
-            # Perform prediction using YOLO
-            model = YOLO(self.model_file_path)
-            results = model.predict(source=frame, conf=confidence, iou=iou, imgsz=800)
+            results = model.predict(frame, save=False, show=False, conf=confidence)
 
-            # Display the frame with predictions
-            if results and results[0]:
-                cv2.imshow("frame", results[0].plot())
-            else:
-                cv2.imshow("frame", frame)
-
+            cv2.imshow("frame", results[0].plot())
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        # Release the webcam and close OpenCV windows
         cap.release()
         cv2.destroyAllWindows()
-
+ 
     def show_link_prediction_dialog(self):
         confidence = float(self.confscale.get()) / 100
         iou = float(self.iouscale.get()) / 100
@@ -273,8 +250,8 @@ class Predict(tk.Frame):
         if self.model_file_path:
             try:
                 if link:
-                    self.result_entry.delete(1.0, tk.END)  # Clear previous results
-                    results = YOLO(self.model_file_path).predict(link, show=True, save=True, conf=confidence,
+                    self.result_entry.delete(1.0, tk.END)
+                    results = YOLO(self.model_file_path).predict(source=link, show=True, save=True, conf=confidence,
                                                                 iou=iou,imgsz=640)
                     self.result_entry.insert(tk.END, results)
                 else:
