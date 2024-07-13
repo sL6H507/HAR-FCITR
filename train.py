@@ -164,7 +164,6 @@ class Train(tk.Frame):
                     project = self.rf.workspace("realtime-human-action-recognition-in-still-images-c4ciq").project("real-time-human-action-recognition")
                     version = project.version(7)
                     dataset = version.download("yolov9")
-                    print(dataset.model_format)
                     self.data_file_path = os.path.join(dataset.location, "data.yaml")                     
                     self.reorganize_data_yaml(self.data_file_path)
                     self.data_file_path = self.data_file_path.replace("\\", "/")
@@ -212,7 +211,7 @@ def main():
     device = '{device}'
     
     model = YOLO(model_path)
-    model.train(device=device, data=data_path, epochs=epochs, imgsz=img_size, batch=batch_size)
+    model.train(device=device, data=data_path, epochs=epochs, imgsz=img_size, batch=batch_size,resume=True)
 
 if __name__ == '__main__':
     main()
