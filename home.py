@@ -3,7 +3,7 @@ from tkinter import messagebox
 from datetime import datetime
 from connector import cursor
 from utils import fetch_and_display_image
-import login,predict,train
+import login,predict,train,validation
 
 class HomePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -51,11 +51,15 @@ class HomePage(tk.Frame):
 
         button_1 = tk.Button(self, text="Train", font=35, borderwidth=0, highlightthickness=0,
                              command=lambda: controller.show_frame_with_auth(train.Train), relief="flat")
-        button_1.place(x=316.0, y=499.0, width=300.0, height=85.0)
+        button_1.place(x=314.0, y=486.0, width=300.0, height=85.0)
 
         button_2 = tk.Button(self, text="Predict", font=35, borderwidth=0, highlightthickness=0,
                              command=lambda: controller.show_frame_with_auth(predict.Predict), relief="flat")
-        button_2.place(x=828.0, y=499.0, width=300.0, height=85.0)
+        button_2.place(x=564.0, y=594.0, width=300.0, height=85.0)
+
+        button_3 = tk.Button(self, text="Validate", font=35, borderwidth=0, highlightthickness=0,
+                             command=lambda: controller.show_frame_with_auth(validation.Validation), relief="flat")
+        button_3.place(x=826.0, y=486.0, width=300.0, height=85.0)
 
         self.canvas.create_text(624.0, 397.0, anchor="nw", text="Please Select", fill="#000000",
                                 font=("Inter", 32 * -1))

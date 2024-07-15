@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox,filedialog
 from pathlib import Path
 import os,sys,subprocess
-import predict, train, home, login, register
+import predict, train, home, login, register,validation
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,12 +22,12 @@ class tkinterApp(tk.Tk):
 
         self.frames = {}
 
-        for F in (home.HomePage, predict.Predict, train.Train, login.Login, register.Register):
+        for F in (home.HomePage, predict.Predict, train.Train, login.Login, register.Register,validation.Validation):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame(home.HomePage)
+        self.show_frame(validation.Validation)
 
     def show_frame(self, page_name):
         frame = self.frames[page_name]
