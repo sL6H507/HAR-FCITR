@@ -36,11 +36,13 @@ Training
 > 
 > Image Size `Default = 640`: Target image size for training. All images are resized to this dimension before being fed into the model.
  
-Validate
+Validating
 ----
-> Epochs : parameter that defines the number times that the learning algorithm will work through the entire training dataset.
+> Model : Select the model that you trained to see what real-life perforamnce be like
+>
+> Dataset : Select the dataset that you want to check whether results are good or not
 > 
-> Batch Size `Default = 16`: the number of samples that you feed into your model at each iteration **epoch** of the training process.
+> Batch Size `Default = 32`: the number of samples that you feed into your model at each iteration **epoch** of the training process.
 > 
 > Image Size `Default = 640`: Target image size for training. All images are resized to this dimension before being fed into the model.
  
