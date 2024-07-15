@@ -36,6 +36,14 @@ Training
 > 
 > Image Size `Default = 640`: Target image size for training. All images are resized to this dimension before being fed into the model.
  
+Validate
+----
+> Epochs : parameter that defines the number times that the learning algorithm will work through the entire training dataset.
+> 
+> Batch Size `Default = 16`: the number of samples that you feed into your model at each iteration **epoch** of the training process.
+> 
+> Image Size `Default = 640`: Target image size for training. All images are resized to this dimension before being fed into the model.
+ 
 Predicting
 ----
 > Confidence `Higher Better`: Sets the minimum confidence threshold for detections. Objects detected with confidence below this threshold will be disregarded. Adjusting this value can help reduce false positives.
