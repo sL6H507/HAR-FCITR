@@ -19,6 +19,8 @@ https://developer.download.nvidia.com/compute/cuda/12.5.1/local_installers/cuda_
 for anaconda users
 
 	conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+**make sure you installed [VC Redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170)**
+
 
  Dataset
  ----
