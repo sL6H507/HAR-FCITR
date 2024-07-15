@@ -4,9 +4,7 @@ from pathlib import Path
 import os,sys,subprocess
 import predict, train, home, login, register
 
-OUTPUT_PATH = Path(__file__).parent
-script_dir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(script_dir)
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 class tkinterApp(tk.Tk):
     def __init__(self, *args, **kwargs):
