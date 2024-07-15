@@ -38,6 +38,7 @@ Training
  
 Validating
 ----
+Validation is a critical step in the machine learning pipeline, allowing you to assess the quality of your trained models.
 > Model : Select the model that you trained to see what real-life perforamnce be like
 >
 > Dataset : Select the dataset that you want to check whether results are good or not
