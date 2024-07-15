@@ -57,7 +57,7 @@ class Setup(tk.Frame):
                 requirements = [req.strip() for req in requirements if req.strip()]  # Filter out empty lines
 
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'pip'])  # Upgrade pip
-            subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', requirements_file],'--no-warn-script-location')  # Install requirements
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', requirements_file])  # Install requirements
             print("Successfully installed all dependencies from requirements.txt.")
 
         except subprocess.CalledProcessError as e:
