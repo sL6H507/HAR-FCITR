@@ -1,6 +1,6 @@
 # This is our Senior Project,
 
-Human Action Recognition using Yolo 
+Human Action Recognition using Yolo with GUI
 
 Installation
 ----
@@ -20,6 +20,7 @@ for anaconda users
 
 	conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 **make sure you installed [VC Redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170)**
+**also make sure you have internet connection**
 
 
  Dataset
