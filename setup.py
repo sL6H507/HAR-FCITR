@@ -1,7 +1,8 @@
-import subprocess
-import sys
+import subprocess,sys,os
 import tkinter as tk
 from tkinter import Canvas, Label, messagebox
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 class Setup(tk.Frame):
     def __init__(self, parent):
