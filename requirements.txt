@@ -22,4 +22,3 @@ mysql-connector-python
 nvsmi
 ultralytics>=8.2.9
 roboflow>=1.1.28
-mysql.connector
