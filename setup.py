@@ -21,7 +21,7 @@ class Setup(tk.Frame):
         button_1 = tk.Button(self, text="Check Required Packages", command=self.check_packages, font=("Inter", 10), relief="flat")
         button_1.place(relx=0.5, rely=0.6, anchor=tk.CENTER, width=200, height=50)
 
-        welcome_label = Label(text="Welcome BLAH BLAH", font=("Inter", 12), bg="#FFFFFF")
+        welcome_label = Label(text="Welcome To Our Project", font=("Inter", 12), bg="#FFFFFF")
         welcome_label.place(relx=0.5, rely=0.3, anchor=tk.CENTER)
 
     def check_installed_packages(self, requirements_file):
