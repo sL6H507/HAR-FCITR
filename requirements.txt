@@ -1,5 +1,6 @@
 gitpython
 ipython
+mysql-connector-python
 matplotlib>=3.2.2
 numpy>=1.18.5
 opencv-python>=4.1.1
@@ -18,7 +19,6 @@ seaborn>=0.11.0
 albumentations>=1.0.3
 pycocotools>=2.0
 torchaudio
-mysql-connector-python
 nvsmi
 ultralytics>=8.2.9
 roboflow>=1.1.28

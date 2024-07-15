@@ -211,7 +211,7 @@ def main():
     device = '{device}'
     
     model = YOLO(model_path)
-    model.train(device=device, data=data_path, epochs=epochs, imgsz=img_size, batch=batch_size,resume=True)
+    model.train(device=device, data=data_path, epochs=epochs, imgsz=img_size, batch=batch_size)
 
 if __name__ == '__main__':
     main()
