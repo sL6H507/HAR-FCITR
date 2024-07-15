@@ -248,36 +248,43 @@ if __name__ == '__main__':
         self.entry_2.insert(tk.END, "\nTraining finished.\n")
         self.entry_2.see(tk.END)
         self.Training_btn.configure(state="active")
-
+        
     def update_gpu_info(self):
         try:
             # Clear previous GPU information
+            self.gpu_info.configure(state="normal")
             self.gpu_info.delete("1.0", tk.END)
 
             # Get GPU information
             gpu_info = self.get_gpu_info()
 
             # Update text widget with new GPU information
-            self.gpu_info.insert(tk.END, gpu_info)
+            if "No GPU found" not in gpu_info:
+                self.gpu_info.insert(tk.END, gpu_info)
+                self.after(5000, self.update_gpu_info)  # Schedule the next update after 5 seconds
+            else:
+                self.gpu_info.insert(tk.END, gpu_info)
+                self.gpu_info.configure(state="disabled")
+
         except Exception as e:
             print(f"Error updating GPU info: {e}")
 
-        # Schedule the next update after 5 seconds (5000 milliseconds)
-        self.after(5000, self.update_gpu_info)
-
     def get_gpu_info(self):
         try:
-            gpus = nvsmi.get_gpus()
-            gpu_info = ""
-            for gpu in gpus:
-                gpu_info += f"GPU: {gpu.id}\n"
-                gpu_info += f"Name: {gpu.name}\n"
-                gpu_info += f"Memory Total: {gpu.mem_total} MiB\n"
-                gpu_info += f"Memory Used: {gpu.mem_used} MiB\n"
-                gpu_info += f"Memory Free: {gpu.mem_free} MiB\n"
-                gpu_info += f"Utilization: {gpu.gpu_util}%\n"
-                gpu_info += f"Temperature: {gpu.temperature} C\n"
-            return gpu_info
+            if torch.cuda.is_available():
+                gpus = nvsmi.get_gpus()
+                gpu_info = ""
+                for gpu in gpus:
+                    gpu_info += f"GPU: {gpu.id}\n"
+                    gpu_info += f"Name: {gpu.name}\n"
+                    gpu_info += f"Memory Total: {gpu.mem_total} MiB\n"
+                    gpu_info += f"Memory Used: {gpu.mem_used} MiB\n"
+                    gpu_info += f"Memory Free: {gpu.mem_free} MiB\n"
+                    gpu_info += f"Utilization: {gpu.gpu_util}%\n"
+                    gpu_info += f"Temperature: {gpu.temperature} C\n"
+                return gpu_info
+            else:
+                return "No GPU found"
         except Exception as e:
             print(f"Error getting GPU info: {e}")
             return "Error fetching GPU info"
