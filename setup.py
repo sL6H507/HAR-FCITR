@@ -29,7 +29,7 @@ class Setup(tk.Frame):
         try:
             with open(requirements_file, 'r') as f:
                 requirements = f.readlines()
-                requirements = [req.strip() for req in requirements if req.strip()]  # Filter out empty lines
+                requirements = [req.strip() for req in requirements if req.strip()]
 
             result = subprocess.run([sys.executable, '-m', 'pip', 'list', '--format', 'freeze'], 
                                     stdout=subprocess.PIPE, text=True)
@@ -54,10 +54,10 @@ class Setup(tk.Frame):
         try:
             with open(requirements_file, 'r') as f:
                 requirements = f.readlines()
-                requirements = [req.strip() for req in requirements if req.strip()]  # Filter out empty lines
+                requirements = [req.strip() for req in requirements if req.strip()]
 
-            subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'pip'])  # Upgrade pip
-            subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', requirements_file])  # Install requirements
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', 'pip'])
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', requirements_file,'--no-warn-script-location'])
             print("Successfully installed all dependencies from requirements.txt.")
 
         except subprocess.CalledProcessError as e:
