@@ -53,5 +53,12 @@ Predicting
 > 
 > Intersection Over Union (IoU) `Lower Better`:  threshold for Non-Maximum Suppression (NMS). Lower values result in fewer detections by eliminating overlapping boxes, useful for reducing duplicates.
 
-
- 
+Performance
+----
+> Box Loss : Difference between predicted and true boxes
+>
+> Class Loss : The accuracy of the classes in each detection
+>
+> Object Loss : The detected objects
+>
+> mean average precision (mAP) : compares the ground-truth bounding box to the detected box and returns a score. `The higher the score, the more accurate the model is in its detections.`
