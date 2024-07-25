@@ -4,7 +4,7 @@ from tkinter import simpledialog
 from PIL import Image, ImageTk
 from io import BytesIO
 from utils import fetch_and_display_image,fetch_image
-import requests,home,train,subprocess,threading,sys,torch,nvsmi
+import requests,home,train,subprocess,threading,sys,torch,nvsmi,psutil
 from ultralytics import YOLO 
 
 class Validation(tk.Frame):
