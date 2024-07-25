@@ -31,7 +31,19 @@ Training
 > Batch Size `Default = 16`: the number of samples that you feed into your model at each iteration **epoch** of the training process.
 > 
 > Image Size `Default = 640`: Target image size for training. All images are resized to this dimension before being fed into the model.
- 
+>
+
+Validating
+----
+Validation is a critical step in the machine learning pipeline, allowing you to assess the quality of your trained models.
+> Model : Select the model that you trained to see what real-life perforamnce be like
+>
+> Dataset : Select the dataset that you want to check whether results are good or not
+> 
+> Batch Size `Default = 32`: the number of samples that you feed into your model at each iteration **epoch** of the training process.
+> 
+> Image Size `Default = 640`: Target image size for training. All images are resized to this dimension before being fed into the model.
+  
 Predicting
 ----
 > Confidence `Higher Better`: Sets the minimum confidence threshold for detections. Objects detected with confidence below this threshold will be disregarded. Adjusting this value can help reduce false positives.
