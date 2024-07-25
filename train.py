@@ -291,10 +291,7 @@ if __name__ == '__main__':
             cpu_info += f"Physical cores: {psutil.cpu_count(logical=False)}\n"
             cpu_info += f"Total cores: {psutil.cpu_count(logical=True)}\n"
             cpufreq = psutil.cpu_freq()
-            cpu_info += f"Current Frequency: {cpufreq.current:.2f}Mhz\n"
-            cpu_info += "CPU Usage Per Core:\n"
-            for i, percentage in enumerate(psutil.cpu_percent(percpu=True, interval=1)):
-                cpu_info += f"Core {i}: {percentage}%\n"
+            cpu_info += f"Current Frequency: {cpufreq.current:.2f}Mhz\n"\
             cpu_info += f"Total CPU Usage: {psutil.cpu_percent()}%\n"
             return cpu_info
         except Exception as e:
