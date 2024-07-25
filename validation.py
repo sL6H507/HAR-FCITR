@@ -213,7 +213,7 @@ class Validation(tk.Frame):
         self.canvas.create_text(929.0, 245.0, anchor="nw", text="Train Using :", fill="#000000",
                                 font=("Inter", 36 * -1))
         
-        self.canvas.create_text(11.0, 444.0, anchor="nw", text="GPU Info", fill="#000000", font=("Inter", 32 * -1))
+        self.canvas.create_text(11.0, 444.0, anchor="nw", text="CPU/GPU Info", fill="#000000", font=("Inter", 32 * -1))
         self.gpu_info = tk.Text(self, bd=0, bg="#FFFFFF", fg="#000716", highlightthickness=0)
         self.gpu_info.place(x=11.0, y=480.0, width=287.0, height=357.0)
         self.update_gpu_info()
@@ -310,43 +310,53 @@ if __name__ == '__main__':
         self.validate.configure(state="active")
     def update_gpu_info(self):
         try:
-            # Clear previous GPU information
-            self.gpu_info.configure(state="normal")
+            # Clear previous information
             self.gpu_info.delete("1.0", tk.END)
 
-            # Get GPU information
+            # Get GPU and CPU information
             gpu_info = self.get_gpu_info()
+            cpu_info = self.get_cpu_info()
 
-            # Update text widget with new GPU information
-            if "No GPU found" not in gpu_info:
-                self.gpu_info.insert(tk.END, gpu_info)
-                self.after(5000, self.update_gpu_info)  # Schedule the next update after 5 seconds
-            else:
-                self.gpu_info.insert(tk.END, gpu_info)
-                self.gpu_info.configure(state="disabled")
-
+            # Update text widget with new information
+            self.gpu_info.insert(tk.END, cpu_info)
+            self.gpu_info.insert(tk.END, gpu_info)
         except Exception as e:
-            print(f"Error updating GPU info: {e}")
+            print(f"Error updating system info: {e}")
+
+        # Schedule the next update after 5 seconds (5000 milliseconds)
+        self.after(5000, self.update_gpu_info)
 
     def get_gpu_info(self):
         try:
-            if torch.cuda.is_available():
-                gpus = nvsmi.get_gpus()
-                gpu_info = ""
-                for gpu in gpus:
-                    gpu_info += f"GPU: {gpu.id}\n"
-                    gpu_info += f"Name: {gpu.name}\n"
-                    gpu_info += f"Memory Total: {gpu.mem_total} MiB\n"
-                    gpu_info += f"Memory Used: {gpu.mem_used} MiB\n"
-                    gpu_info += f"Memory Free: {gpu.mem_free} MiB\n"
-                    gpu_info += f"Utilization: {gpu.gpu_util}%\n"
-                    gpu_info += f"Temperature: {gpu.temperature} C\n"
-                return gpu_info
-            else:
-                return "No GPU found"
+            gpus = nvsmi.get_gpus()
+            gpu_info = "GPU Information:\n"
+            for gpu in gpus:
+                gpu_info += f"GPU: {gpu.id}\n"
+                gpu_info += f"Name: {gpu.name}\n"
+                gpu_info += f"Memory Total: {gpu.mem_total} MiB\n"
+                gpu_info += f"Memory Used: {gpu.mem_used} MiB\n"
+                gpu_info += f"Memory Free: {gpu.mem_free} MiB\n"
+                gpu_info += f"Utilization: {gpu.gpu_util}%\n"
+                gpu_info += f"Temperature: {gpu.temperature} C\n"
+                gpu_info += "\n"
+            return gpu_info
         except Exception as e:
             print(f"Error getting GPU info: {e}")
-            return "Error fetching GPU info"
+            return "Error fetching GPU info\n"
+
+    def get_cpu_info(self):
+        try:
+            cpu_info = "CPU Information:\n"
+            cpu_info += f"Physical cores: {psutil.cpu_count(logical=False)}\n"
+            cpu_info += f"Total cores: {psutil.cpu_count(logical=True)}\n"
+            cpufreq = psutil.cpu_freq()
+            cpu_info += f"Current Frequency: {cpufreq.current:.2f}Mhz\n"\
+            cpu_info += f"Total CPU Usage: {psutil.cpu_percent()}%\n"
+            return cpu_info
+        except Exception as e:
+            print(f"Error getting CPU info: {e}")
+            return "Error fetching CPU info\n"
+            
     def checkgpu(self):
         chk = torch.cuda.is_available()
         if chk == True:
