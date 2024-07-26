@@ -4,7 +4,11 @@ from tkinter import simpledialog
 from PIL import Image, ImageTk
 from io import BytesIO
 from utils import fetch_and_display_image,fetch_image
-import requests,cv2,home,train,wget,os
+import requests
+import cv2
+import home,train
+import wget
+import os
 from ultralytics import YOLO 
 
 class Predict(tk.Frame):
@@ -153,7 +157,17 @@ class Predict(tk.Frame):
                                  highlightthickness=0, command=self.show_link_prediction_dialog,
                                  relief="flat")
         linkprediction.place(
-            x=598.0,
+            x=729.0,
+            y=902.0,
+            width=237.0,
+            height=82.0
+        )
+
+        directoryprediction = tk.Button(self, text="Prediction Directory", font=("Inter", 15), borderwidth=0,
+                                 highlightthickness=0, command=self.directorypredection,
+                                 relief="flat")
+        directoryprediction.place(
+            x=436.0,
             y=902.0,
             width=237.0,
             height=82.0
@@ -286,3 +300,29 @@ class Predict(tk.Frame):
                     messagebox.showwarning(title="Predict", message="Model file or input file not selected.")
             except Exception as er:
                 messagebox.showerror(title="Predict", message=str(er))
+    
+    def directorypredection(self):
+        confidence = float(self.confscale.get()) / 100
+        iou = float(self.iouscale.get()) / 100
+        directory = filedialog.askdirectory(title="Select Directory for Prediction")
+
+        if self.model_file_path:
+            try:
+                if directory:
+                    self.result_entry.delete(1.0, tk.END)
+                    model = YOLO(self.model_file_path)
+                    results_text = ""
+                    
+                    for filename in os.listdir(directory):
+                        file_path = os.path.join(directory, filename)
+                        if os.path.isfile(file_path):
+                            results = model.predict(source=file_path, save=True, conf=confidence, iou=iou, imgsz=640)
+                            results_text += f"{filename}:\n{results}\n\n"
+
+                    self.result_entry.insert(tk.END, results_text)
+                else:
+                    messagebox.showwarning(title="Predict", message="No directory selected.")
+            except Exception as er:
+                messagebox.showerror(title="Predict", message=str(er))
+        else:
+            messagebox.showwarning(title="Predict", message="Model file not selected.")
