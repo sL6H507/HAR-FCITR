@@ -24,3 +24,4 @@ ultralytics>=8.2.9
 roboflow>=1.1.28
 boto3
 psutil
+wget
