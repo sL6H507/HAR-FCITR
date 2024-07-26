@@ -164,7 +164,7 @@ class Predict(tk.Frame):
         )
 
         directoryprediction = tk.Button(self, text="Prediction Directory", font=("Inter", 15), borderwidth=0,
-                                 highlightthickness=0, command=self.directorypredection,
+                                 highlightthickness=0, command=self.directoryprediction,
                                  relief="flat")
         directoryprediction.place(
             x=436.0,
@@ -247,7 +247,8 @@ class Predict(tk.Frame):
                 self.result_entry.delete(1.0, tk.END)  # Clear previous results
                 results = YOLO(self.model_file_path).predict(self.file_path, show=True, save=True, conf=confidence,
                                                              iou=iou,imgsz=640)
-                self.result_entry.insert(tk.END, results)
+                results_text = f"File name {self.file_path}:\n\nSpeed {results[0].speed}:\n\nSaved Path {results[0].path}:\n"
+                self.result_entry.insert(tk.END, results_text)
             else:
                 messagebox.showwarning(title="Predict", message="Model file or input file not selected.")
         except Exception as er:
@@ -284,6 +285,7 @@ class Predict(tk.Frame):
 
         cap.release()
         cv2.destroyAllWindows()
+
  
     def show_link_prediction_dialog(self):
         confidence = float(self.confscale.get()) / 100
@@ -295,13 +297,14 @@ class Predict(tk.Frame):
                     self.result_entry.delete(1.0, tk.END)
                     results = YOLO(self.model_file_path).predict(source=link, show=True, save=True, conf=confidence,
                                                                 iou=iou,imgsz=640)
-                    self.result_entry.insert(tk.END, results)
+                    results_text = f"File name {self.file_path}:\n\nSpeed {results[0].speed}:\n\nSaved Path {results[0].path}:\n"
+                    self.result_entry.insert(tk.END, results_text)
                 else:
                     messagebox.showwarning(title="Predict", message="Model file or input file not selected.")
             except Exception as er:
                 messagebox.showerror(title="Predict", message=str(er))
     
-    def directorypredection(self):
+    def directoryprediction(self):
         confidence = float(self.confscale.get()) / 100
         iou = float(self.iouscale.get()) / 100
         directory = filedialog.askdirectory(title="Select Directory for Prediction")
@@ -316,8 +319,8 @@ class Predict(tk.Frame):
                     for filename in os.listdir(directory):
                         file_path = os.path.join(directory, filename)
                         if os.path.isfile(file_path):
-                            results = model.predict(source=file_path, save=True, conf=confidence, iou=iou, imgsz=640)
-                            results_text += f"{filename}:\n{results}\n\n"
+                            results = model.predict(source=file_path,  save=True, conf=confidence, iou=iou, imgsz=640)
+                            results_text += f"File name {filename}:\n\nSpeed {results[0].speed}:\n\nSaved Path {results[0].path}:\n"
 
                     self.result_entry.insert(tk.END, results_text)
                 else:
