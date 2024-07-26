@@ -4,7 +4,7 @@ from tkinter import simpledialog
 from PIL import Image, ImageTk
 from io import BytesIO
 from utils import fetch_and_display_image,fetch_image
-import requests,cv2,home,train
+import requests,cv2,home,train,wget,os
 from ultralytics import YOLO 
 
 class Predict(tk.Frame):
@@ -12,6 +12,7 @@ class Predict(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.model_file_path = None
+        self.value_model_inside = tk.StringVar(self) 
         self.file_path = None
 
         self.configure(bg="#FFFFFF")
@@ -36,38 +37,30 @@ class Predict(tk.Frame):
             font=("Inter", 36 * -1)
         )
         self.canvas.create_text(
-            569.0,
-            539.0,
+            568.0,
+            581.0,
             anchor="nw",
             text="Select An option ",
             fill="#000000",
             font=("Inter", 36 * -1)
         )
-        self.canvas.create_text(305.0, 599.0, anchor="nw", text="Live Footage", fill="#000000", font=("Inter", 36 * -1))
-        self.canvas.create_text(660.0, 599.0, anchor="nw", text="Video", fill="#000000", font=("Inter", 36 * -1))
-        self.canvas.create_text(974.0, 599.0, anchor="nw", text="Image", fill="#000000", font=("Inter", 36 * -1))
+        self.canvas.create_text(304.0, 641.0, anchor="nw", text="Live Footage", fill="#000000", font=("Inter", 36 * -1))
+        self.canvas.create_text(659.0, 641.0, anchor="nw", text="Video", fill="#000000", font=("Inter", 36 * -1))
+        self.canvas.create_text(973.0, 641.0, anchor="nw", text="Image", fill="#000000", font=("Inter", 36 * -1))
 
-        self.entry_1 = tk.Entry(self, bd=0, bg="#F8F8F8", fg="#000716", highlightthickness=0)
-        self.entry_1.place(
-            x=304.0,
-            y=234.0,
-            width=467.0,
-            height=34.0
-        )
+        self.value_model_inside.set("Select a Model") 
+        options_model_list = ["Human Action Recogition","Other"] 
+        model_menu = tk.OptionMenu(self, self.value_model_inside, *options_model_list, command=self.change_model) 
+        model_menu.place(x=385.0, y=242.0, width=189.0, height=49.0)
 
         self.canvas.create_text(
             304.0,
             194.0,
             anchor="nw",
-            text="Model (.pt) location :",
+            text="Model (.pt) Selection :",
             fill="#000000",
             font=("Inter", 36 * -1)
         )
-
-        self.modeldir_btn_img = fetch_image(self,"https://media.tenor.com/kEvgsQa811YAAAAM/dir.gif", 70, 36)
-        modeldir = tk.Button(self, image=self.modeldir_btn_img, borderwidth=0, highlightthickness=0,
-                                   command=self.select_model_file, relief="flat")
-        modeldir.place(x=771.0, y=234.0, width=70.0, height=36.0)
 
         self.confscale = Scale(
             self,
@@ -83,7 +76,7 @@ class Predict(tk.Frame):
         )
         self.confscale.place(
             x=304.0,
-            y=297.0
+            y=326.0
         )
 
         self.iouscale = Scale(
@@ -100,12 +93,12 @@ class Predict(tk.Frame):
         )
         self.iouscale.place(
             x=525.0,
-            y=297.0
+            y=326.0
         )
 
         self.canvas.create_text(
             304.0,
-            270.0,
+            299.0,
             anchor="nw",
             text="Confidence :",
             fill="#000000",
@@ -113,8 +106,17 @@ class Predict(tk.Frame):
         )
 
         self.canvas.create_text(
+            304.0,
+            378.0,
+            anchor="nw",
+            text="Results :",
+            fill="#000000",
+            font=("Inter", 24 * -1)
+        )
+
+        self.canvas.create_text(
             525.0,
-            270.0,
+            299.0,
             anchor="nw",
             text="Overlapping:",
             fill="#000000",
@@ -123,8 +125,8 @@ class Predict(tk.Frame):
 
         self.result_entry = Text(self, bd=0, bg="#F8F8F8", fg="#000716", highlightthickness=0)
         self.result_entry.place(
-            x=304.0,
-            y=365.0,
+            x=303.0,
+            y=407.0,
             width=832.0,
             height=151.0
         )
@@ -132,8 +134,8 @@ class Predict(tk.Frame):
         predict_btn = tk.Button(self, text="Predict", font=("Inter", 20), borderwidth=0, highlightthickness=0,
                                 command=self.p_predict, relief="flat")
         predict_btn.place(
-            x=957.0,
-            y=234.0,
+            x=956.0,
+            y=242.0,
             width=179.0,
             height=36.0
         )
@@ -141,8 +143,8 @@ class Predict(tk.Frame):
         nextpage_btn = tk.Button(self, text="Training", font=("Inter", 15), borderwidth=0, bg="#FFFFFF",
                                  highlightthickness=0, command=lambda: controller.show_frame_with_auth(train.Train), relief="flat")
         nextpage_btn.place(
-            x=19.0,
-            y=860.0,
+            x=18.0,
+            y=902.0,
             width=131.0,
             height=50.0
         )
@@ -152,7 +154,7 @@ class Predict(tk.Frame):
                                  relief="flat")
         linkprediction.place(
             x=598.0,
-            y=860.0,
+            y=902.0,
             width=237.0,
             height=82.0
         )
@@ -160,22 +162,22 @@ class Predict(tk.Frame):
         self.homepage_btn = tk.Button(self, text="Home Page", font=("Inter", 15), bg="#FFFFFF",
                                       command=lambda: controller.show_frame_with_auth(home.HomePage), borderwidth=0,
                                       highlightthickness=0, relief="flat")
-        self.homepage_btn.place(x=1290, y=860, width=131, height=50)
+        self.homepage_btn.place(x=1289, y=931, width=131, height=50)
 
 
         self.image_image_1 = fetch_and_display_image(self,"https://media.tenor.com/Q8nIjfXA_awAAAAi/fcitr.gif", 115.0, 107.0,214,209)
 
         self.photoimage=fetch_image(self,"https://media.tenor.com/Zv5dIqsnvtcAAAAM/photo.gif",221,209),
         predictimage = tk.Button(self, image=self.photoimage, borderwidth=0, highlightthickness=0,command=self.select_image_file, relief="flat")
-        predictimage.place(x=915.0,y=643.0,width=221.0,height=209.0)
+        predictimage.place(x=914.0,y=685.0,width=221.0,height=209.0)
 
         self.liveimage = fetch_image(self,"https://media.tenor.com/LfYVxf_SjysAAAAM/cam.gif", 221, 209)
         self.predictlive = tk.Button(self, borderwidth=0, highlightthickness=0, image=self.liveimage, command=self.cam_predict, relief="flat")
-        self.predictlive.place(x=304.0, y=643.0, width=221.0, height=209.0)
+        self.predictlive.place(x=303.0, y=685.0, width=221.0, height=209.0)
 
         self.predictvid_img = fetch_image(self,"https://media.tenor.com/Co-LVRF8ZwEAAAAM/cam.gif", 221, 209)
         predictvid = tk.Button(self, image=self.predictvid_img, borderwidth=0, highlightthickness=0,command=self.select_video_file, relief="flat")
-        predictvid.place(x=599.0,y=643.0,width=221.0,height=209.0)
+        predictvid.place(x=597.0,y=685.0,width=221.0,height=209.0)
 
     def select_model_file(self):
         self.model_file_path = filedialog.askopenfilename(
@@ -183,8 +185,32 @@ class Predict(tk.Frame):
             filetypes=(("PyTorch Model Files", "*.pt"),)
         )
         if self.model_file_path:
-            self.entry_1.delete(0, tk.END)
-            self.entry_1.insert(0, self.model_file_path)
+            print(self.model_file_path)
+
+    def change_model(self, selection):
+        if selection == "Other":
+            self.select_model_file()
+        else:
+            if selection == "Human Action Recogition":
+                self.result_entry.delete(1.0, tk.END)
+                
+                # Filename and URL
+                filename = 'HAR.pt'
+                url = 'https://download1640.mediafire.com/8hecjri417pgMbo9Xhmmb_CSa_hwrkb_LLlahvFXZAXQL3UM6yIQ24ESKqlyjLeLFgl8eeZqqECCSH2RmBb_g5uzrRZYqWATsdpkOX1faYCofk23R1oUwahfr-EFzUPmBkQfMQrNyYnk51H-bXjD4PCdLB1MjTf_5HguUkolrUc/yxuozlnqx3deya0/HAR.pt'
+                
+                # Check if file exists
+                if os.path.exists(filename):
+                    self.result_entry.insert(tk.END, f"File already exists: {filename}")
+                    self.model_file_path = filename
+                else:
+                    # Download the file if it does not exist
+                    downloaded_file = wget.download(url, filename)
+                    self.result_entry.insert(tk.END, downloaded_file)
+                    self.model_file_path = downloaded_file
+            else:
+                self.model_file_path = None
+                tk.messagebox.showwarning(title="Training", message="Wrong Selection")
+
 
     def select_video_file(self):
         self.file_path = filedialog.askopenfilename(
@@ -234,7 +260,9 @@ class Predict(tk.Frame):
                 print("Failed to capture frame")
                 continue
 
-            results = model.predict(frame, save=False, show=False, conf=confidence)
+            self.result_entry.delete(1.0, tk.END)
+            results = model.predict(frame, save=False, show=False, conf=confidence,imgsz=640)
+            self.result_entry.insert(tk.END, results)
 
             cv2.imshow("frame", results[0].plot())
             if cv2.waitKey(1) & 0xFF == ord('q'):
