@@ -170,7 +170,7 @@ class Predict(tk.Frame):
             height=82.0
         )
 
-        directoryprediction = tk.Button(self, text="Prediction Directory", font=("Inter", 15), borderwidth=0,
+        directoryprediction = tk.Button(self, text="Predict a Directory", font=("Inter", 15), borderwidth=0,
                                         highlightthickness=0, command=self.directoryprediction,
                                         relief="flat")
         directoryprediction.place(
