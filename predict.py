@@ -262,7 +262,7 @@ class Predict(tk.Frame):
             if self.model_file_path and self.file_path:
                 self.result_entry.delete(1.0, tk.END)  # Clear previous results
                 results = YOLO(self.model_file_path).predict(self.file_path, show=True, save=True, conf=confidence,
-                                                             iou=iou, imgsz=640)
+                                                             iou=iou, imgsz=480)
                 results_text = f"File name : {self.file_path}\n\nSpeed : {
                     results[0].speed}\n\nSaved Path : {results[0].save_dir}\n"
                 self.result_entry.insert(tk.END, results_text)
@@ -295,7 +295,7 @@ class Predict(tk.Frame):
 
             self.result_entry.delete(1.0, tk.END)
             results = model.predict(
-                frame, save=False, show=False, conf=confidence, imgsz=640)
+                frame, save=False, show=False, conf=confidence, imgsz=480)
             self.result_entry.insert(tk.END, results)
 
             cv2.imshow("frame", results[0].plot())
@@ -318,7 +318,7 @@ class Predict(tk.Frame):
             try:
                 self.result_entry.delete(1.0, tk.END)
                 img = wget.download(link)
-                results = YOLO(self.model_file_path).predict(img, show=True, save=True, conf=confidence, iou=iou, imgsz=640)
+                results = YOLO(self.model_file_path).predict(img, show=True, save=True, conf=confidence, iou=iou, imgsz=480)
                 
                 # Check if results contain any frames
                 if results:
@@ -353,7 +353,7 @@ class Predict(tk.Frame):
                         file_path = os.path.join(directory, filename)
                         if os.path.isfile(file_path):
                             results = model.predict(
-                                source=file_path,  save=True, conf=confidence, iou=iou, imgsz=640)
+                                source=file_path,  save=True, conf=confidence, iou=iou, imgsz=480)
                             results_text += f"File name {filename}:\n\nSpeed {
                                 results[0].speed}:\n\nSaved Path {results[0].path}:\n"
 
