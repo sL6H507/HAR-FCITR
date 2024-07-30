@@ -222,8 +222,8 @@ class Predict(tk.Frame):
                 self.result_entry.delete(1.0, tk.END)
 
                 # Filename and URL
-                filename = 'HAR.pt'
-                url = 'https://download1640.mediafire.com/8hecjri417pgMbo9Xhmmb_CSa_hwrkb_LLlahvFXZAXQL3UM6yIQ24ESKqlyjLeLFgl8eeZqqECCSH2RmBb_g5uzrRZYqWATsdpkOX1faYCofk23R1oUwahfr-EFzUPmBkQfMQrNyYnk51H-bXjD4PCdLB1MjTf_5HguUkolrUc/yxuozlnqx3deya0/HAR.pt'
+                filename = 'HAR-1.pt'
+                url = 'https://download1526.mediafire.com/vwrq2c3bhptge4GlO0PU5ApBm-MEEgbaA_5fBDwaqksumV-CKn7wuxiceaSFNFJeeIdOanHG_4nkn4Ir2dPZIz_0UgcJTqdeZiXhagjKJJo3IE-ktu7IlDZwr9KQSk8l5ajPc4awyzoSDvC44_5gbcuuxgSk3VdFsh9VGXdn7U3v32g/yrp7tns00h5c80s/HAR-1.pt'
 
                 # Check if file exists
                 if os.path.exists(filename):
