@@ -1,3 +1,4 @@
+import threading
 import tkinter as tk
 from tkinter import Canvas, Button, filedialog, Scale, Text, messagebox
 from tkinter import simpledialog
@@ -170,7 +171,7 @@ class Predict(tk.Frame):
             height=82.0
         )
 
-        directoryprediction = tk.Button(self, text="Predict a Directory", font=("Inter", 15), borderwidth=0,
+        directoryprediction = tk.Button(self, text="Prediction Directory", font=("Inter", 15), borderwidth=0,
                                         highlightthickness=0, command=self.directoryprediction,
                                         relief="flat")
         directoryprediction.place(
@@ -262,9 +263,8 @@ class Predict(tk.Frame):
             if self.model_file_path and self.file_path:
                 self.result_entry.delete(1.0, tk.END)  # Clear previous results
                 results = YOLO(self.model_file_path).predict(self.file_path, show=True, save=True, conf=confidence,
-                                                             iou=iou,imgsz=640)
-                results_text = f"File name : {self.file_path}\n\nSpeed : {
-                    results[0].speed}\n\nSaved Path : {results[0].save_dir}\n"
+                                                             iou=iou, imgsz=480)
+                results_text = f"File name : {self.file_path}\n\nSpeed : {results[0].speed}\n\nSaved Path : {results[0].save_dir}\n"
                 self.result_entry.insert(tk.END, results_text)
             else:
                 messagebox.showwarning(
@@ -318,7 +318,7 @@ class Predict(tk.Frame):
             try:
                 self.result_entry.delete(1.0, tk.END)
                 img = wget.download(link)
-                results = YOLO(self.model_file_path).predict(img, show=True, save=True, conf=confidence, iou=iou,imgsz=640)
+                results = YOLO(self.model_file_path).predict(img, show=True, save=True, conf=confidence, iou=iou, imgsz=480)
                 
                 # Check if results contain any frames
                 if results:
@@ -353,8 +353,8 @@ class Predict(tk.Frame):
                         file_path = os.path.join(directory, filename)
                         if os.path.isfile(file_path):
                             results = model.predict(
-                                source=file_path,  save=True,save_txt=True, conf=confidence, iou=iou,imgsz=640)
-                            results_text += f"File name {filename}:\n\nSpeed{results[0].speed}:\n\nSaved Path {results[0].path}:\n"
+                                source=file_path,  save=True, conf=confidence, iou=iou, imgsz=480)
+                            results_text += f"File name {filename}:\n\nSpeed {results[0].speed}:\n\nSaved Path {results[0].path}:\n"
 
                     self.result_entry.insert(tk.END, results_text)
                 else:
