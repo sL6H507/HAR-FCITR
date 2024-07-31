@@ -1,4 +1,5 @@
 import threading
+import time
 import tkinter as tk
 from tkinter import Canvas, Button, filedialog, Scale, Text, messagebox
 from tkinter import simpledialog
@@ -89,6 +90,7 @@ class Predict(tk.Frame):
             x=304.0,
             y=326.0
         )
+        self.confscale.set(50)
 
         self.iouscale = Scale(
             self,
@@ -106,6 +108,7 @@ class Predict(tk.Frame):
             x=525.0,
             y=326.0
         )
+        self.iouscale.set(50)
 
         self.canvas.create_text(
             304.0,
@@ -286,6 +289,14 @@ class Predict(tk.Frame):
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         cap.set(cv2.CAP_PROP_FPS, 50)
 
+        # Generate a dynamic file name using the current timestamp
+        timestamp = time.strftime("%Y%m%d-%H%M%S")
+        file_name = f'HAR_{timestamp}.mp4'
+
+        # Define the codec and create VideoWriter object
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        out = cv2.VideoWriter(file_name, fourcc, 30.0, (640, 480))
+
         while True:
             ret, frame = cap.read()
 
@@ -294,15 +305,18 @@ class Predict(tk.Frame):
                 continue
 
             self.result_entry.delete(1.0, tk.END)
-            results = model.predict(
-                frame,iou=iou, conf=confidence)
+            results = model.predict(frame, iou=iou, conf=confidence)
             self.result_entry.insert(tk.END, results)
+
+            # Write the frame to the video file
+            out.write(results[0].plot())
 
             cv2.imshow("frame", results[0].plot())
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
         cap.release()
+        out.release()  # Release the video writer
         cv2.destroyAllWindows()
 
     def show_link_prediction_dialog(self):
