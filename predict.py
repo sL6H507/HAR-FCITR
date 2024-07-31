@@ -1,4 +1,3 @@
-import threading
 import time
 import tkinter as tk
 from tkinter import Canvas, Button, filedialog, Scale, Text, messagebox
