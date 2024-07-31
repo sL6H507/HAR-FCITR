@@ -295,7 +295,7 @@ class Predict(tk.Frame):
 
             self.result_entry.delete(1.0, tk.END)
             results = model.predict(
-                ret,iou=iou, conf=confidence)
+                frame,iou=iou, conf=confidence)
             self.result_entry.insert(tk.END, results)
 
             cv2.imshow("frame", results[0].plot())
