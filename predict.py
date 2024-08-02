@@ -226,7 +226,7 @@ class Predict(tk.Frame):
 
                 # Filename and URL
                 filename = 'HAR-1.pt'
-                url = 'https://download1526.mediafire.com/vwrq2c3bhptge4GlO0PU5ApBm-MEEgbaA_5fBDwaqksumV-CKn7wuxiceaSFNFJeeIdOanHG_4nkn4Ir2dPZIz_0UgcJTqdeZiXhagjKJJo3IE-ktu7IlDZwr9KQSk8l5ajPc4awyzoSDvC44_5gbcuuxgSk3VdFsh9VGXdn7U3v32g/yrp7tns00h5c80s/HAR-1.pt'
+                url = 'https://drive.usercontent.google.com/download?id=12v_ZkHJBX5Lbeo8hSPuVoK1K9IClkDTZ&export=download&authuser=0&confirm=t&uuid=bb48fad6-4986-48cd-bada-86235f98241e&at=APZUnTWfdOiuwCF8uWp3QhdIEUBT%3A1722602559078'
 
                 # Check if file exists
                 if os.path.exists(filename):
@@ -366,7 +366,7 @@ class Predict(tk.Frame):
                         file_path = os.path.join(directory, filename)
                         if os.path.isfile(file_path):
                             results = model.predict(
-                                source=file_path,  save=True, conf=confidence, iou=iou, imgsz=480)
+                                source=file_path,  save=True, conf=confidence, iou=iou, imgsz=480,save_conf=True,save_txt=True)
                             results_text += f"File name {filename}:\n\nSpeed {results[0].speed}:\n\nSaved Path {results[0].path}:\n"
 
                     self.result_entry.insert(tk.END, results_text)
