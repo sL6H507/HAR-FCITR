@@ -78,13 +78,12 @@ class Train(tk.Frame):
         self.canvas.create_text(738.0, 237.0, anchor="nw", text="Batch Size :", fill="#000000", font=("Inter", 32 * -1))
 
         self.value_model_inside.set("Select a Pre-Trained Model") 
-        options_model_list = ["YoloV9 Compact", "YoloV9 Extended", "Gelan Compact", "Gelan Extended","Other"] 
+        options_model_list = ["YoloV9 Small", "YoloV9 Medium","YoloV9 Compact", "YoloV9 Extended", "Other"] 
 
         model_menu = tk.OptionMenu(self, self.value_model_inside, *options_model_list, command=self.change_model) 
         model_menu.place(x=405.0, y=227.0, width=189.0, height=49.0)
 
-        TensorBoard_btn = tk.Button(self, text="TensorBoard", font=("Inter", 20), borderwidth=0, highlightthickness=0,
-                                    command=self.start_tensorboard, relief="flat")
+        TensorBoard_btn = tk.Button(self, text="TensorBoard", font=("Inter", 20), borderwidth=0, highlightthickness=0,command=self.start_tensorboard, relief="flat")
         TensorBoard_btn.place(x=578.0, y=911.0, width=259.0, height=82.0)
 
         self.GPU = tk.Radiobutton(
@@ -109,8 +108,7 @@ class Train(tk.Frame):
         )
         self.CPU.place(x=1025.0, y=385.0, width=100.0, height=44.0)
         
-        self.canvas.create_text(913.0, 341.0, anchor="nw", text="Train Using :", fill="#000000",
-                                font=("Inter", 36 * -1))
+        self.canvas.create_text(913.0, 341.0, anchor="nw", text="Train Using :", fill="#000000",font=("Inter", 36 * -1))
         self.homepage_btn = tk.Button(self, text="Home Page", font=("Inter", 15), bg="#FFFFFF", 
                                       command=lambda: controller.show_frame_with_auth(home.HomePage), borderwidth=0,
                                       highlightthickness=0, relief="flat")
@@ -147,10 +145,10 @@ class Train(tk.Frame):
                 self.trainmodel_file_path = "yolov9c.pt"
             elif selection == "YoloV9 Extended":
                 self.trainmodel_file_path = "yolov9e.pt"
-            elif selection == "Gelan Compact":
-                self.trainmodel_file_path = "gelan-c.pt"
-            elif selection == "Gelan Extended":
-                self.trainmodel_file_path = "gelan-e.pt"
+            elif selection == "YoloV9 Medium":
+                self.trainmodel_file_path = "yolov9m.pt"
+            elif selection == "YoloV9 Small":
+                self.trainmodel_file_path = "yolov9s.pt"
             else:
                 self.trainmodel_file_path = None
                 tk.messagebox.showwarning(title="Training", message="Wrong Selection")
