@@ -41,7 +41,7 @@ class HomePage(tk.Frame):
                                 fill="#000000", font=("Inter", 20 * -1))
         self.canvas.create_text(828.0, 730.0, anchor="nw",
                                 text="Supervisor: Prof.Dr. Anton Satria Prabuwono"
-                                     "\n\n\nco-Supervisor: Prof.Dr. Ahmad Hoirul Basori",
+                                     "\n\n\nSupervisor: Prof.Dr. Ahmad Hoirul Basori",
                                 fill="#000000", font=("Inter", 20 * -1))
         self.canvas.create_text(534.0, 946.0, anchor="nw", text="(KING ABDULAZIZ UNIVERSITY)", fill="#011328",
                                 font=("Inter", 24 * -1))
