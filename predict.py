@@ -293,8 +293,8 @@ class Predict(tk.Frame):
         iou = float(self.iouscale.get()) / 100
 
         cap = cv2.VideoCapture(0)
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 800)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         cap.set(cv2.CAP_PROP_FPS, 15)
 
         # Generate a dynamic file name using the current timestamp
@@ -303,7 +303,7 @@ class Predict(tk.Frame):
 
         # Define the codec and create VideoWriter object
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(file_name, fourcc, 30.0, (800, 600))
+        out = cv2.VideoWriter(file_name, fourcc, 30.0, (1280, 720))
 
         while True:
             ret, frame = cap.read()
