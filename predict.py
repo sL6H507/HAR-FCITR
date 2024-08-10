@@ -1,3 +1,4 @@
+import threading
 import time
 import tkinter as tk
 from tkinter import Canvas, Button, filedialog, Scale, Text, messagebox
@@ -288,52 +289,53 @@ class Predict(tk.Frame):
             messagebox.showwarning(
                 title="Predict", message="Model file not selected.")
             return
-        model = YOLO(model=self.model_file_path)
-        confidence = float(self.confscale.get()) / 100
-        iou = float(self.iouscale.get()) / 100
 
-        cap = cv2.VideoCapture(0)
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-        cap.set(cv2.CAP_PROP_FPS, 15)
+        def run_camera_prediction():
+            model = YOLO(model=self.model_file_path)
+            confidence = float(self.confscale.get()) / 100
+            iou = float(self.iouscale.get()) / 100
 
-        # Generate a dynamic file name using the current timestamp
-        timestamp = time.strftime("%Y%m%d-%H%M%S")
-        file_name = f'HAR_{timestamp}.mp4'
+            cap = cv2.VideoCapture(0)
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+            cap.set(cv2.CAP_PROP_FPS, 15)
 
-        # Define the codec and create VideoWriter object
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(file_name, fourcc, 30.0, (1280, 720))
+            timestamp = time.strftime("%Y%m%d-%H%M%S")
+            file_name = f'HAR_{timestamp}.mp4'
 
-        while True:
-            ret, frame = cap.read()
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            out = cv2.VideoWriter(file_name, fourcc, 30.0, (1280, 720))
 
-            if not ret:
-                print("Failed to capture frame")
-                break
+            while True:
+                ret, frame = cap.read()
 
-            self.result_entry.delete(1.0, tk.END)
-            results = model.predict(frame, iou=iou, conf=confidence)
+                if not ret:
+                    print("Failed to capture frame")
+                    break
 
-            results_text = ""
-            # Show prediction probabilities with class names
-            for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
-                class_name = model.names[int(cls)]
-                results_text += f"\nPrediction {i+1}:\n"
-                results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
+                self.result_entry.delete(1.0, tk.END)
+                results = model.predict(frame, iou=iou, conf=confidence)
 
-            self.result_entry.insert(tk.END, results_text)
+                results_text = ""
+                for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
+                    class_name = model.names[int(cls)]
+                    results_text += f"\nPrediction {i+1}:\n"
+                    results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
 
-            # Write the frame to the video file
-            out.write(results[0].plot())
+                self.result_entry.insert(tk.END, results_text)
 
-            cv2.imshow("frame", results[0].plot())
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+                out.write(results[0].plot())
 
-        cap.release()
-        out.release()  # Release the video writer
-        cv2.destroyAllWindows()
+                cv2.imshow("frame", results[0].plot())
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+
+            cap.release()
+            out.release()
+            cv2.destroyAllWindows()
+
+        # Run the camera prediction in a separate thread
+        threading.Thread(target=run_camera_prediction).start()
 
 
     def show_link_prediction_dialog(self):
