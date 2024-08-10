@@ -225,8 +225,8 @@ class Predict(tk.Frame):
                 self.result_entry.delete(1.0, tk.END)
 
                 # Filename and URL
-                filename = 'HAR-1.pt'
-                url = 'https://drive.usercontent.google.com/download?id=12v_ZkHJBX5Lbeo8hSPuVoK1K9IClkDTZ&export=download&authuser=0&confirm=t&uuid=bb48fad6-4986-48cd-bada-86235f98241e&at=APZUnTWfdOiuwCF8uWp3QhdIEUBT%3A1722602559078'
+                filename = 'HAR.pt'
+                url = 'https://drive.usercontent.google.com/download?id=10u18T9FVRo6mY9xcErX5MMMDM0wqBvl0&export=download&authuser=0&confirm=t&uuid=85fd1a27-fbb0-4ec8-92de-b7358f676dd9&at=APZUnTWbQCNNF8Rf5sHm-vbTn14M%3A1723305433606'
 
                 # Check if file exists
                 if os.path.exists(filename):
@@ -264,9 +264,15 @@ class Predict(tk.Frame):
         try:
             if self.model_file_path and self.file_path:
                 self.result_entry.delete(1.0, tk.END)  # Clear previous results
-                results = YOLO(self.model_file_path).predict(self.file_path, show=True, save=True, conf=confidence,
-                                                             iou=iou, imgsz=480)
+                results = YOLO(self.model_file_path).predict(self.file_path, show=True, save=True, conf=confidence, iou=iou, imgsz=480)
+
                 results_text = f"File name : {self.file_path}\n\nSpeed : {results[0].speed}\n\nSaved Path : {results[0].save_dir}\n"
+
+                # Show prediction probabilities
+                for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
+                    results_text += f"\nPrediction {i+1}:\n"
+                    results_text += f"Class: {cls}, Confidence: {conf*100:.2f}%\n"
+
                 self.result_entry.insert(tk.END, results_text)
             else:
                 messagebox.showwarning(
@@ -284,9 +290,9 @@ class Predict(tk.Frame):
         iou = float(self.iouscale.get()) / 100
 
         cap = cv2.VideoCapture(0)
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        cap.set(cv2.CAP_PROP_FPS, 50)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 800)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
+        cap.set(cv2.CAP_PROP_FPS, 15)
 
         # Generate a dynamic file name using the current timestamp
         timestamp = time.strftime("%Y%m%d-%H%M%S")
@@ -294,18 +300,26 @@ class Predict(tk.Frame):
 
         # Define the codec and create VideoWriter object
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(file_name, fourcc, 30.0, (640, 480))
+        out = cv2.VideoWriter(file_name, fourcc, 30.0, (800, 600))
 
         while True:
             ret, frame = cap.read()
 
             if not ret:
                 print("Failed to capture frame")
-                continue
+                break
 
             self.result_entry.delete(1.0, tk.END)
             results = model.predict(frame, iou=iou, conf=confidence)
-            self.result_entry.insert(tk.END, results)
+
+            results_text = ""
+            # Show prediction probabilities with class names
+            for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
+                class_name = model.names[int(cls)]
+                results_text += f"\nPrediction {i+1}:\n"
+                results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
+
+            self.result_entry.insert(tk.END, results_text)
 
             # Write the frame to the video file
             out.write(results[0].plot())
@@ -317,6 +331,7 @@ class Predict(tk.Frame):
         cap.release()
         out.release()  # Release the video writer
         cv2.destroyAllWindows()
+
 
     def show_link_prediction_dialog(self):
         confidence = float(self.confscale.get()) / 100
@@ -331,15 +346,19 @@ class Predict(tk.Frame):
             try:
                 self.result_entry.delete(1.0, tk.END)
                 img = wget.download(link)
-                results = YOLO(self.model_file_path).predict(img, show=True, save=True, conf=confidence, iou=iou, imgsz=480)
+                model = YOLO(self.model_file_path)
+                results = model.predict(img, show=True, save=True, conf=confidence, iou=iou, imgsz=480)
                 
-                # Check if results contain any frames
-                if results:
-                    results_text = f"File name {self.file_path}:\n\nSpeed {results[0].speed}:\n\nSaved Path {results[0].path}:\n"
-                    self.result_entry.insert(tk.END, results_text)
-                else:
-                    messagebox.showwarning(title="Predict", message="No frames received from the video stream.")
-            
+                results_text = f"File name : {self.file_path}\n\nSpeed : {results[0].speed}\n\nSaved Path : {results[0].save_dir}\n"
+
+                # Show prediction probabilities with class names
+                for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
+                    class_name = model.names[int(cls)]
+                    results_text += f"\nPrediction {i+1}:\n"
+                    results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
+
+                self.result_entry.insert(tk.END, results_text)
+
             except Exception as er:
                 # Handle specific exceptions related to video stream
                 if 'Video stream unresponsive' in str(er):
@@ -348,6 +367,7 @@ class Predict(tk.Frame):
                     messagebox.showerror(title="Predict", message=str(er))
         else:
             messagebox.showwarning(title="Predict", message="Model file not selected.")
+
 
     def directoryprediction(self):
         confidence = float(self.confscale.get()) / 100
@@ -366,8 +386,15 @@ class Predict(tk.Frame):
                         file_path = os.path.join(directory, filename)
                         if os.path.isfile(file_path):
                             results = model.predict(
-                                source=file_path,  save=True, conf=confidence, iou=iou, imgsz=480,save_conf=True,save_txt=True)
-                            results_text += f"File name {filename}:\n\nSpeed {results[0].speed}:\n\nSaved Path {results[0].path}:\n"
+                                source=file_path, save=True, conf=confidence, iou=iou, imgsz=480, save_conf=True, save_txt=True)
+
+                            results_text += f"File name : {filename}\n\nSpeed : {results[0].speed}\n\nSaved Path : {results[0].save_dir}\n"
+
+                            # Show prediction probabilities with class names
+                            for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
+                                class_name = model.names[int(cls)]
+                                results_text += f"\nPrediction {i+1}:\n"
+                                results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
 
                     self.result_entry.insert(tk.END, results_text)
                 else:
@@ -378,3 +405,4 @@ class Predict(tk.Frame):
         else:
             messagebox.showwarning(
                 title="Predict", message="Model file not selected.")
+
