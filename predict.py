@@ -264,15 +264,18 @@ class Predict(tk.Frame):
         try:
             if self.model_file_path and self.file_path:
                 self.result_entry.delete(1.0, tk.END)  # Clear previous results
-                results = YOLO(self.model_file_path).predict(self.file_path, show=True, save=True, conf=confidence, iou=iou, imgsz=480)
+                model = YOLO(self.model_file_path)
+                results = model.predict(self.file_path, show=True, save=True, conf=confidence, iou=iou, imgsz=480)
 
-                results_text = f"File name : {self.file_path}\n\nSpeed : {results[0].speed}\n\nSaved Path : {results[0].save_dir}\n"
+                results_text = f"File name : {self.file_path}\n\nSpeed : {results[0].speed}"
 
-                # Show prediction probabilities
+                # Show prediction probabilities with class names
                 for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
-                    results_text += f"\nPrediction {i+1}:\n"
-                    results_text += f"Class: {cls}, Confidence: {conf*100:.2f}%\n"
-
+                    class_name = model.names[int(cls)]
+                    results_text += f"\n\nPrediction {i+1}:\n"
+                    results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
+                    
+                results_text += f"\n\nSaved Path : {results[0].save_dir}\n"
                 self.result_entry.insert(tk.END, results_text)
             else:
                 messagebox.showwarning(
@@ -348,14 +351,16 @@ class Predict(tk.Frame):
                 img = wget.download(link)
                 model = YOLO(self.model_file_path)
                 results = model.predict(img, show=True, save=True, conf=confidence, iou=iou, imgsz=480)
-                
-                results_text = f"File name : {self.file_path}\n\nSpeed : {results[0].speed}\n\nSaved Path : {results[0].save_dir}\n"
+
+                results_text = f"File name : {self.file_path}\n\nSpeed : {results[0].speed}"
 
                 # Show prediction probabilities with class names
                 for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
                     class_name = model.names[int(cls)]
-                    results_text += f"\nPrediction {i+1}:\n"
+                    results_text += f"\n\nPrediction {i+1}:\n"
                     results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
+                    
+                results_text += f"\n\nSaved Path : {results[0].save_dir}\n"
 
                 self.result_entry.insert(tk.END, results_text)
 
@@ -388,13 +393,16 @@ class Predict(tk.Frame):
                             results = model.predict(
                                 source=file_path, save=True, conf=confidence, iou=iou, imgsz=480, save_conf=True, save_txt=True)
 
-                            results_text += f"File name : {filename}\n\nSpeed : {results[0].speed}\n\nSaved Path : {results[0].save_dir}\n"
 
-                            # Show prediction probabilities with class names
-                            for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
-                                class_name = model.names[int(cls)]
-                                results_text += f"\nPrediction {i+1}:\n"
-                                results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
+                    results_text = f"File name : {self.file_path}\n\nSpeed : {results[0].speed}"
+
+                    # Show prediction probabilities with class names
+                    for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
+                        class_name = model.names[int(cls)]
+                        results_text += f"\n\nPrediction {i+1}:\n"
+                        results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
+                        
+                    results_text += f"\n\nSaved Path : {results[0].save_dir}\n"
 
                     self.result_entry.insert(tk.END, results_text)
                 else:
