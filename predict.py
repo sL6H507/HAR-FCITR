@@ -272,7 +272,7 @@ class Predict(tk.Frame):
                 # Show prediction probabilities with class names
                 for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
                     class_name = model.names[int(cls)]
-                    results_text += f"\n\nPrediction {i+1}:\n"
+                    results_text += f"\nPrediction {i+1}:\n"
                     results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
                     
                 results_text += f"\n\nSaved Path : {results[0].save_dir}\n"
@@ -357,7 +357,7 @@ class Predict(tk.Frame):
                 # Show prediction probabilities with class names
                 for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
                     class_name = model.names[int(cls)]
-                    results_text += f"\n\nPrediction {i+1}:\n"
+                    results_text += f"\nPrediction {i+1}:\n"
                     results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
                     
                 results_text += f"\n\nSaved Path : {results[0].save_dir}\n"
@@ -399,7 +399,7 @@ class Predict(tk.Frame):
                     # Show prediction probabilities with class names
                     for i, (cls, conf) in enumerate(zip(results[0].boxes.cls, results[0].boxes.conf)):
                         class_name = model.names[int(cls)]
-                        results_text += f"\n\nPrediction {i+1}:\n"
+                        results_text += f"\nPrediction {i+1}:\n"
                         results_text += f"Class: {class_name}, Confidence: {conf*100:.2f}%\n"
                         
                     results_text += f"\n\nSaved Path : {results[0].save_dir}\n"
