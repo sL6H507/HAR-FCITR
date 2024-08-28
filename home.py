@@ -64,10 +64,10 @@ class HomePage(tk.Frame):
         self.canvas.create_text(624.0, 397.0, anchor="nw", text="Please Select", fill="#000000",
                                 font=("Inter", 32 * -1))
         
-        self.logout_btn = tk.Button(self, text="Login", font=30, bg="#FFFFFF", command=self.logout, borderwidth=0,
-                                    highlightthickness=0, relief="flat")
-        self.logout_btn.place(x=1276, y=921, width=131, height=50)
-        self.update_logout_button_text()
+        """         self.logout_btn = tk.Button(self, text="Login", font=30, bg="#FFFFFF", command=self.logout, borderwidth=0,
+                                            highlightthickness=0, relief="flat")
+                self.logout_btn.place(x=1276, y=921, width=131, height=50)
+                self.update_logout_button_text() """
 
     def logout(self):
         self.controller.set_session(None)
