@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-import predict, train, home, login, register,os
+import predict, train, validation,home,os
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,22 +20,12 @@ class tkinterApp(tk.Tk):
 
         self.frames = {}
 
-        for F in (home.HomePage, predict.Predict, train.Train, login.Login, register.Register):
+        for F in (home.HomePage, predict.Predict, train.Train,validation.Validation):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame(home.HomePage)
-
-    def show_frame(self, page_name):
-        frame = self.frames[page_name]
-        if page_name in [login.Login, register.Register]:
-            self.geometry("1280x720")
-            self.center_window(1280, 720)
-        else:
-            self.geometry("1440x1024")
-            self.center_window(1440, 1024)
-        frame.tkraise()
+        self.show_frame_with_auth(home.HomePage)
 
     def set_session(self, session_id):
         self.session = session_id
@@ -46,23 +36,10 @@ class tkinterApp(tk.Tk):
     def clear_session(self):
         self.session = None
 
-    """     def show_frame_with_auth(self, page_name):
-            if self.get_session() is None:
-                messagebox.showerror("Error", "You're not signed in")
-                self.show_frame(login.Login)
-            else:
-                self.show_frame(page_name)
-                if page_name == home.HomePage:
-                    self.frames[home.HomePage].update_logout_button_text() """
-
     def show_frame_with_auth(self, page_name):
         frame = self.frames[page_name]
-        if page_name in [login.Login, register.Register]:
-            self.geometry("1280x720")
-            self.center_window(1280, 720)
-        else:
-            self.geometry("1440x1024")
-            self.center_window(1440, 1024)
+        self.geometry("1440x1024")
+        self.center_window(1440, 1024)
         frame.tkraise()
 
     def center_window(self, width, height):

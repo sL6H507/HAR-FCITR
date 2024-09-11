@@ -1,9 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime
-from connector import cursor
 from utils import fetch_and_display_image
-import login,predict,train,validation
+import predict,train,validation
 
 class HomePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -53,9 +52,9 @@ class HomePage(tk.Frame):
                              command=lambda: controller.show_frame_with_auth(train.Train), relief="flat")
         button_1.place(x=314.0, y=486.0, width=300.0, height=85.0)
 
-        #button_2 = tk.Button(self, text="Predict", font=35, borderwidth=0, highlightthickness=0,
-        #                     command=lambda: controller.show_frame_with_auth(predict.Predict), relief="flat")
-        #button_2.place(x=564.0, y=594.0, width=300.0, height=85.0)
+        button_2 = tk.Button(self, text="Validate", font=35, borderwidth=0, highlightthickness=0,
+                             command=lambda: controller.show_frame_with_auth(validation.Validation), relief="flat")
+        button_2.place(x=564.0, y=594.0, width=300.0, height=85.0)
 
         button_3 = tk.Button(self, text="Predict", font=35, borderwidth=0, highlightthickness=0,
                              command=lambda: controller.show_frame_with_auth(predict.Predict), relief="flat")
@@ -63,35 +62,6 @@ class HomePage(tk.Frame):
 
         self.canvas.create_text(624.0, 397.0, anchor="nw", text="Please Select", fill="#000000",
                                 font=("Inter", 32 * -1))
-        
-        """         self.logout_btn = tk.Button(self, text="Login", font=30, bg="#FFFFFF", command=self.logout, borderwidth=0,
-                                            highlightthickness=0, relief="flat")
-                self.logout_btn.place(x=1276, y=921, width=131, height=50)
-                self.update_logout_button_text() """
 
-    def logout(self):
-        self.controller.set_session(None)
-        self.update_logout_button_text()
-        self.controller.show_frame(login.Login)
 
-    def update_logout_button_text(self):
-        session = self.controller.get_session()
-        if session is None:
-            self.logout_btn.config(text="Login")
-        else:
-            username = self.fetch_username_from_db(session)
-            uname = f"User: {username}"
-            self.logout_btn.config(text=uname)
 
-    def fetch_username_from_db(self, user_id):
-        try:
-            query = "SELECT username FROM users WHERE session_id = %s"
-            cursor.execute(query, (user_id,))
-            result = cursor.fetchone()
-            if result:
-                return result[0]
-            else:
-                return None
-        except Exception as e:
-            print(f"Error fetching username from database: {str(e)}")
-            return None
